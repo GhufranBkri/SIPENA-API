@@ -1,0 +1,69 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id            String         @id @default(cuid())
+  email         String
+  no_identitas  String         @unique
+  name          String
+  password      String
+  program_studi String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  role          role
+  laporan       laporan[]
+  petugas_unit  petugas_unit[]
+}
+
+model unit {
+  id           String         @id
+  nama_unit    String
+  petugas_unit petugas_unit[]
+}
+
+model laporan {
+  id                    String         @id
+  pelaor                users          @relation(fields: [pelapor_id], references: [id])
+  pelapor_id            String
+  judul_pelaporan       String
+  isi_pelaporan         String
+  petugas_unit          petugas_unit[]
+  status                status
+  document_pendukung    String
+  keterangan_penindakan String
+}
+
+model petugas_unit {
+  id         String   @id
+  petugas_id String
+  unit_id    String
+  petugas    users    @relation(fields: [petugas_id], references: [id])
+  unit       unit     @relation(fields: [unit_id], references: [id])
+  laporan    laporan? @relation(fields: [laporanId], references: [id])
+  laporanId  String?
+}
+
+enum role {
+  user
+  admin
+  petugas
+  petugas_super
+}
+
+enum status {
+  pending
+  approved
+  rejected
+}
