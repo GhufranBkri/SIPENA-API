@@ -53,7 +53,7 @@ const verifyToken = async (token) => {
         }
         console.log(`Attempting to find user with no_identitas: ${decoded.no_identitas}`);
         const user = await getUserbyId(decoded.no_identitas);
-
+        
         if (!user) {
             console.error(`User not found for no_identitas: ${decoded.no_identitas}`);
             throw new Error('User not found');

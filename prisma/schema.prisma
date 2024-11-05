@@ -3,7 +3,6 @@
 
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,28 +13,49 @@ datasource db {
 }
 
 model users {
-  id            String         @id @default(cuid())
-  email         String
-  no_identitas  String         @unique
-  name          String
-  password      String
-  program_studi String?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  role          role
-  laporan       laporan[]
-  petugas_unit  petugas_unit[]
+  id                    String                  @id @default(cuid())
+  email                 String
+  no_identitas          String                  @unique
+  name                  String
+  password              String
+  program_studi         String?
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
+  laporanMahasiswaDosen laporanMahasiswaDosen[]
+  petugas_unit          petugas_unit[]
 }
 
 model unit {
-  id           String         @id
-  nama_unit    String
-  petugas_unit petugas_unit[]
+  id                String              @id
+  nama_unit         String
+  petugas_unit      petugas_unit[]
+  laporanMasyarakat laporanMasyarakat[]
 }
 
-model laporan {
+model kategori {
+  id                    String                  @id @default(cuid())
+  nama                  String                  @unique
+  laporanMasyarakat     laporanMasyarakat[]
+  laporanMahasiswaDosen laporanMahasiswaDosen[]
+}
+
+model laporanMasyarakat {
+  id                 String   @id
+  judul              String
+  isi                String
+  nomor_telepon      String // Menyimpan nomor telepon pelapor
+  document_pendukung String
+  kategori_id        String // hubungan ke tabel kategori
+  kategori           kategori @relation(fields: [kategori_id], references: [id])
+  unit_id            String // hubungan ke tabel unit
+  unit               unit     @relation(fields: [unit_id], references: [id])
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model laporanMahasiswaDosen {
   id                    String         @id
-  pelaor                users          @relation(fields: [pelapor_id], references: [id])
+  pelapor               users          @relation(fields: [pelapor_id], references: [id])
   pelapor_id            String
   judul_pelaporan       String
   isi_pelaporan         String
@@ -43,15 +63,19 @@ model laporan {
   status                status
   document_pendukung    String
   keterangan_penindakan String
+  kategori_id           String // hubungan ke tabel kategori
+  kategori              kategori       @relation(fields: [kategori_id], references: [id])
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
 }
 
 model petugas_unit {
-  id         String   @id
+  id         String                 @id
   petugas_id String
   unit_id    String
-  petugas    users    @relation(fields: [petugas_id], references: [id])
-  unit       unit     @relation(fields: [unit_id], references: [id])
-  laporan    laporan? @relation(fields: [laporanId], references: [id])
+  petugas    users                  @relation(fields: [petugas_id], references: [id])
+  unit       unit                   @relation(fields: [unit_id], references: [id])
+  laporan    laporanMahasiswaDosen? @relation(fields: [laporanId], references: [id])
   laporanId  String?
 }
 
