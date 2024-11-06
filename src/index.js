@@ -23,7 +23,7 @@ app.get("/api", (req, res) => {
     res.send("hai");
 });
 app.get("/", (req, res) => {
-    res.send("Hello World!");
+    res.send("PACAR IPA");
 });
 
 // Hubungkan ke database dan mulai server
