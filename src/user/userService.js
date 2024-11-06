@@ -1,35 +1,49 @@
 const { findUsers, insertUser, findUsersByUniq } = require('./userRepository');
-const { hashPassword } = require('../utility/encodePassword');
+const hashPassword = require('../utility/encodePassword');
 
 const getAllUsers = async () => {
-    const users = await findUsers();
-    return users;
-}
+    try {
+        const users = await findUsers();
+        return users;
+    } catch (error) {
+        throw new Error("Failed to retrieve users: " + error.message);
+    }
+};
 
 const createUser = async (userData) => {
-    const findUser = await findUsersByUniq(userData.no_identitas);
-    if (findUser) {
-        throw new Error("User already exist")
+    try {
+        // Check if user already exists
+        const existingUser = await findUsersByUniq(userData.no_identitas);
+        if (existingUser) {
+            throw new Error("User already exists");
+        }
+
+        // Hash the password
+        const password = userData.password;
+        userData.password = await hashPassword(password);
+
+        // Insert new user
+        const user = await insertUser(userData);
+        return user;
+    } catch (error) {
+        throw new Error("Failed to create user: " + error.message);
     }
-
-    const password = userData.password; // hash password here
-    userData.password = await hashPassword(password);
-    const user = await insertUser(userData);
-
-
-    return user;
-}
+};
 
 const getUserbyId = async (id) => {
-    const UserData = await findUsersByUniq(id);
-    if (!UserData) {
-        throw new Error("user not found");
+    try {
+        const userData = await findUsersByUniq(id);
+        if (!userData) {
+            throw new Error("User not found");
+        }
+        return userData;
+    } catch (error) {
+        throw new Error("Failed to retrieve user: " + error.message);
     }
-    return UserData;
 };
+
 module.exports = {
     getAllUsers,
     createUser,
     getUserbyId
-}
-
+};

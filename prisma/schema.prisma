@@ -7,9 +7,15 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// datasource db {
+//   provider = "postgresql"
+//   url      = env("DATABASE_URL")
+// }
+
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
 model users {
@@ -21,6 +27,7 @@ model users {
   program_studi         String?
   createdAt             DateTime                @default(now())
   updatedAt             DateTime                @updatedAt
+  role                  role                    @default(user)
   laporanMahasiswaDosen laporanMahasiswaDosen[]
   petugas_unit          petugas_unit[]
 }

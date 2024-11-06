@@ -1,4 +1,4 @@
-const prisma = require('../db');
+const { prisma } = require('../db');
 
 const findUsers = async () => {
     const users = await prisma.users.findMany();
@@ -15,26 +15,27 @@ const insertUser = async (userData) => {
             no_identitas: userData.no_identitas,
             program_studi: userData.program_studi,
         }
-    })
+    });
+    return user;
 }
-const findUsersByUniq = async (no_identitas) => {
 
+const findUsersByUniq = async (no_identitas) => {
     if (!no_identitas) {
         throw new Error('no_identitas is required');
     }
 
     const user = await prisma.users.findUnique({
         where: {
-            no_identitas: no_identitas,
+            no_identitas,
         }
-    })
-
-    return user
+    });
+    return user;
 }
+
 
 
 module.exports = {
     findUsers,
     insertUser,
-    findUsersByUniq
-}
+    findUsersByUniq,
+};
