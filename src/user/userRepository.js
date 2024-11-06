@@ -32,10 +32,22 @@ const findUsersByUniq = async (no_identitas) => {
     return user;
 }
 
+const deletedUser = async (no_identitas) => {
+    const user = await prisma.users.delete({
+        where: {
+            no_identitas,
+        }
+    })
+}
+
+
 
 
 module.exports = {
     findUsers,
     insertUser,
     findUsersByUniq,
+    deletedUser,
+    
+
 };

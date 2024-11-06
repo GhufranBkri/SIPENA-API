@@ -9,11 +9,13 @@ const app = express();
 dotenv.config();
 
 // Gunakan cors dengan konfigurasi yang diinginkan
-app.use(cors({
-    origin: 'http://example.com', // Ganti dengan URL frontend Anda
-    methods: ['GET', 'POST'], // Metode yang diizinkan
-    allowedHeaders: ['Content-Type', 'Authorization'], // Header yang diizinkan
-}));
+// app.use(cors({
+//     origin: '*', // Ganti dengan URL frontend Anda
+//     methods: ['GET', 'POST'], // Metode yang diizinkan
+//     allowedHeaders: ['Content-Type', 'Authorization'], // Header yang diizinkan
+// }));
+
+app.use(cors());
 
 app.use(express.json());
 

@@ -1,4 +1,4 @@
-const { findUsers, insertUser, findUsersByUniq } = require('./userRepository');
+const { findUsers, insertUser, findUsersByUniq, deletedUser } = require('./userRepository');
 const hashPassword = require('../utility/encodePassword');
 
 const getAllUsers = async () => {
@@ -42,8 +42,15 @@ const getUserbyId = async (id) => {
     }
 };
 
+const deleteUserbyId = async (id) => {
+    await getUserbyId(id);
+
+    await deletedUser(id);
+}
+
 module.exports = {
     getAllUsers,
     createUser,
-    getUserbyId
+    getUserbyId,
+    deleteUserbyId
 };
